@@ -1,13 +1,17 @@
 const mysql = require('mysql2');
+require('dotenv').config();
 
+
+// Use Railway-provided environment variables for MySQL
 const db = mysql.createPool({
-    host: '127.0.0.1',       // Database host
-    user: 'root',            // Database username
-    password: 'Truphy@11343', // Database password
-    database: 'eventmanagement', // Database name
-    waitForConnections: true,  // Wait for a connection if none are available
-    connectionLimit: 10,       // Max concurrent connections
-    queueLimit: 0,             // No limit on request queue
+    host: process.env.MYSQLHOST || 'localhost',      // Host from Railway
+    user: process.env.MYSQLUSER || 'root',          // User from Railway
+    password: process.env.MYSQLPASSWORD || '',      // Password from Railway
+    database: process.env.MYSQLDATABASE || '',      // Database name from Railway
+    port: process.env.MYSQLPORT || 3306,            // Port from Railway (default: 3306)
+    waitForConnections: true,                       // Wait for connections if unavailable
+    connectionLimit: 10,                            // Maximum concurrent connections
+    queueLimit: 0                                   // No limit on request queue
 });
 
 // Test the connection
