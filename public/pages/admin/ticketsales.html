@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Sales | Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/adminstyles.css">
+</head>
+<body class="admin-dashboard">
+    <!-- Sidebar Placeholder -->
+    <aside id="sidebar"></aside>
+
+    <div class="main-content">
+        <header class="top-nav">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="search" placeholder="Search events, users, or tickets..." aria-label="Search">
+            </div>
+            <div class="top-nav-right">
+                <button class="icon-btn" aria-label="Notifications"><i class="fas fa-bell"></i></button>
+                <div class="admin-profile">
+                    <img src="profile-placeholder.jpg" alt="Admin profile">
+                    <span>John Admin</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="page-header">
+                <h1>Ticket Sales</h1>
+                <div class="header-actions">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-download"></i> Export Report
+                    </button>
+                    <select class="date-range-select" aria-label="Select Date Range">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Sales Overview Cards -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #e3f2fd;">
+                        <i class="fas fa-ticket-alt" style="color: #1976d2;"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Total Tickets Sold</h3>
+                        <p class="stat-number total-tickets">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #e8f5e9;">
+                        <i class="fas fa-dollar-sign" style="color: #388e3c;"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Revenue</h3>
+                        <p class="stat-number revenue">$0.00</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #fff3e0;">
+                        <i class="fas fa-chart-line" style="color: #f57c00;"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Conversion Rate</h3>
+                        <p class="stat-number conversion-rate">0%</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #f3e5f5;">
+                        <i class="fas fa-users" style="color: #7b1fa2;"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Active Events</h3>
+                        <p class="stat-number active-events">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sales Chart -->
+            <section class="dashboard-card">
+                <div class="card-header">
+                    <h2>Sales Trend</h2>
+                    <div class="card-actions">
+                        <button class="btn btn-outline active">Daily</button>
+                        <button class="btn btn-outline">Weekly</button>
+                        <button class="btn btn-outline">Monthly</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="salesTrendChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Ticket Sales Table -->
+            <section class="dashboard-card">
+                <div class="card-header">
+                    <h2>Recent Sales</h2>
+                    <div class="card-actions">
+                        <input type="text" placeholder="Search transactions..." class="search-input">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Event</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Tickets</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Include the Sidebar Script -->
+    <script src="../../assets/js/sidebar.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch("/api/ticket-sales");
+                if (!response.ok) throw new Error("Failed to fetch ticket sales data");
+
+                const data = await response.json();
+
+                // Update stats
+                document.querySelector(".stat-number.total-tickets").textContent = data.totalTickets;
+                document.querySelector(".stat-number.revenue").textContent = `$${data.totalRevenue.toFixed(2)}`;
+
+                // Update recent sales table
+                const tableBody = document.querySelector(".data-table tbody");
+                tableBody.innerHTML = ""; // Clear table
+
+                data.recentSales.forEach((sale) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>#${sale.transaction_id}</td>
+                        <td>${sale.event_name}</td>
+                        <td>${sale.customer}</td>
+                        <td>${new Date(sale.transaction_date).toLocaleDateString()}</td>
+                        <td>${sale.tickets_sold}</td>
+                        <td>$${sale.total_amount.toFixed(2)}</td>
+                        <td><span class="badge success">Completed</span></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error loading ticket sales data:", error);
+            }
+        });
+    </script>
+</body>
+</html>

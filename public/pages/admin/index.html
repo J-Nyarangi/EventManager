@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Dashboard for Event Manager">
+    <title>Admin Dashboard | Event Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/adminstyles.css">
+</head>
+<body class="admin-dashboard">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Eventlify</span>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <h3>Main Menu</h3>
+                <ul>
+                    <li class="active">
+                        <a href="#dashboard"><i class="fas fa-home"></i>Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="eventmanagement.html"><i class="fas fa-calendar-week"></i>Events</a>
+                    </li>
+                    <li>
+                        <a href="ticketsales.html"><i class="fas fa-ticket-alt"></i>Tickets</a>
+                    </li>
+                    <li>
+                        <a href="attendeespage.html"><i class="fas fa-users"></i>Users</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <h3>Analytics</h3>
+                <ul>
+                    <li>
+                        <a href="#reports"><i class="fas fa-chart-bar"></i>Reports</a>
+                    </li>
+                    <li>
+                        <a href="#revenue"><i class="fas fa-dollar-sign"></i>Revenue</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-section">
+                <h3>Settings</h3>
+                <ul>
+                    <li>
+                        <a href="#profile"><i class="fas fa-user-cog"></i>Profile</a>
+                    </li>
+                    <li>
+                        <a href="#settings"><i class="fas fa-cog"></i>Settings</a>
+                    </li>
+                    <li>
+                        <a href="../login.html"><i class="fas fa-cog"></i>Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="search" placeholder="Search events, users, or tickets...">
+            </div>
+            <div class="top-nav-right">
+                <div class="notifications">
+                    <button class="icon-btn" aria-label="View notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                </div>
+                <div class="admin-profile">
+                    <img src="profile-placeholder.jpg" alt="Admin profile">
+                    <span>John Admin</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </header>
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <!-- Quick Stats -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #e3f2fd;">
+                        <i class="fas fa-calendar-check" style="color: #1976d2;"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Total Events</h3>
+                        <p id="total-events" class="stat-number">Loading...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #e8f5e9;">
+                        <i class="fas fa-ticket-alt" style="color: #388e3c;"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Tickets Sold</h3>
+                        <p id="tickets-sold" class="stat-number">Loading...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #fff3e0;">
+                        <i class="fas fa-users" style="color: #f57c00;"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Total Users</h3>
+                        <p id="total-users" class="stat-number">Loading...</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #fce4ec;">
+                        <i class="fas fa-dollar-sign" style="color: #c2185b;"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Revenue</h3>
+                        <p id="total-revenue" class="stat-number">Loading...</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Fetch dashboard stats from the API
+                const response = await fetch('/api/admin/dashboard-stats');
+                const stats = await response.json();
+
+                // Populate stats dynamically
+                document.getElementById('total-events').textContent = stats.totalEvents || 0;
+                document.getElementById('tickets-sold').textContent = stats.ticketsSold || 0;
+                document.getElementById('total-users').textContent = stats.totalUsers || 0;
+                document.getElementById('total-revenue').textContent = `$${stats.totalRevenue || 0}`;
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+                alert('Failed to load dashboard stats.');
+            }
+        });
+    </script>
+</body>
+</html>

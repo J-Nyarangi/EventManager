@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management | Admin Dashboard</title>
+    <link rel="stylesheet" href="../../assets/css/adminstyles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="admin-dashboard">
+    <!-- Sidebar -->
+    <aside id="sidebar"></aside>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <header>
+            <h1>Event Management</h1>
+            <button class="btn btn-primary" id="createEventBtn">
+                <i class="fas fa-plus"></i> Create New Event
+            </button>
+        </header>
+
+        <!-- Events Table -->
+        <section class="table-section">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Capacity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic Rows Will Be Injected Here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Modal for Creating/Editing Events -->
+        <div class="modal" id="eventModal" aria-hidden="true">
+            <div class="modal-content">
+                <header>
+                    <h2>Create/Edit Event</h2>
+                    <button class="close-btn">&times;</button>
+                </header>
+                <form id="eventForm" enctype="multipart/form-data">
+                    <label for="eventName">Event Name</label>
+                    <input type="text" id="eventName" name="name" required>
+                
+                    <label for="eventDate">Date</label>
+                    <input type="date" id="eventDate" name="date" required>
+                
+                    <label for="eventCategory">Category</label>
+                    <select id="eventCategory" name="category" required>
+                        <option value="conference">Conference</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="concert">Concert</option>
+                    </select>
+                
+                    <label for="eventLocation">Location</label>
+                    <input type="text" id="eventLocation" name="location" required>
+                
+                    <label for="eventCapacity">Capacity</label>
+                    <input type="number" id="eventCapacity" name="capacity" required>
+                
+                    <label for="bannerImage">Banner Image</label>
+                    <input type="file" id="bannerImage" name="banner_image" accept="image/*">
+                
+                    <!-- Ticket Types Section -->
+                    <fieldset id="ticketSection">
+                        <legend>Ticket Types</legend>
+                        <div id="ticketFields">
+                            <div class="ticket-field">
+                                <label>Ticket Type</label>
+                                <input type="text" name="ticketType[]" placeholder="e.g., VIP" required>
+                                <label>Price</label>
+                                <input type="number" name="ticketPrice[]" placeholder="e.g., 199" min="0" required>
+                                <label>Quantity</label>
+                                <input type="number" name="ticketQuantity[]" placeholder="e.g., 50" min="1" required>
+                            </div>
+                        </div>
+                        <button type="button" id="addTicketBtn" class="btn btn-secondary">Add Another Ticket</button>
+                    </fieldset>
+                
+                    <button type="submit" class="btn btn-primary">Save Event</button>
+                </form>
+                
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/sidebar.js"></script>
+    <script src="../../assets/js/eventmanagement.js"></script>
+    
+</body>
+</html>

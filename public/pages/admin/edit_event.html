@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Event - Event Manager</title>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../assets/css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Event Manager</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="add_event.html">Add Event</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <header class="header">
+            <h1>Edit Event</h1>
+            <p class="subtitle">Update the event details below.</p>
+        </header>
+
+        <!-- Edit Event Form -->
+        <form id="editEventForm" class="form-container" novalidate>
+            <div class="form-group">
+                <label for="eventTitle">Event Title <span class="required">*</span></label>
+                <input 
+                    type="text" 
+                    id="eventTitle" 
+                    name="eventTitle" 
+                    placeholder="Enter event title" 
+                    required 
+                    aria-required="true" 
+                    minlength="3" 
+                    maxlength="100"
+                >
+                <small class="form-hint">Title must be between 3 and 100 characters.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="eventDescription">Description <span class="required">*</span></label>
+                <textarea 
+                    id="eventDescription" 
+                    name="eventDescription" 
+                    placeholder="Enter event description" 
+                    required 
+                    aria-required="true" 
+                    minlength="10" 
+                    maxlength="500"
+                    rows="4"
+                ></textarea>
+                <small class="form-hint">Description must be between 10 and 500 characters.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="eventDate">Date <span class="required">*</span></label>
+                <input 
+                    type="datetime-local" 
+                    id="eventDate" 
+                    name="eventDate" 
+                    required 
+                    aria-required="true"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="eventCategory">Category <span class="required">*</span></label>
+                <select id="eventCategory" name="eventCategory" required aria-required="true">
+                    <option value="">Select a category</option>
+                    <option value="Conference">Conference</option>
+                    <option value="Workshop">Workshop</option>
+                    <option value="Seminar">Seminar</option>
+                    <option value="Meeting">Meeting</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="navigateTo('index.html')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" style="display: none;">
+        <div class="toast-content">
+            <i class="fas fa-check-circle success-icon"></i>
+            <i class="fas fa-exclamation-circle error-icon"></i>
+            <span id="toastMessage">Event updated successfully!</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Event Manager. All rights reserved.</p>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="js/edit-event.js"></script>
+    <script>
+        // Populate form with existing event data
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+
+            try {
+                const eventTitle = params.get("title") || "";
+                const eventDescription = params.get("description") || "";
+                const eventDate = params.get("date") || "";
+                const eventCategory = params.get("category") || "";
+
+                document.getElementById("eventTitle").value = eventTitle;
+                document.getElementById("eventDescription").value = eventDescription;
+                document.getElementById("eventDate").value = eventDate;
+                document.getElementById("eventCategory").value = eventCategory;
+            } catch (error) {
+                console.error("Error populating form data:", error);
+            }
+        });
+
+        // Handle form submission
+        document.getElementById("editEventForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const updatedEvent = {
+                title: document.getElementById("eventTitle").value,
+                description: document.getElementById("eventDescription").value,
+                date: document.getElementById("eventDate").value,
+                category: document.getElementById("eventCategory").value,
+            };
+
+            // Simulate sending updated data to the backend
+            console.log("Updated Event Data:", updatedEvent);
+
+            // Show success toast
+            const toast = document.getElementById("toast");
+            toast.style.display = "block";
+            setTimeout(() => (toast.style.display = "none"), 3000);
+
+            // Navigate back to homepage after saving
+            setTimeout(() => navigateTo("index.html"), 3000);
+        });
+
+        // Navigate Helper Function
+        function navigateTo(pageUrl) {
+            window.location.href = pageUrl;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Event Ticket</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    .navbar {
+      background-color: #007bff;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    .btn-primary {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+    }
+    footer p {
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <h1>Eventlify</h1>
+  </header>
+  <main class="container">
+    <h2>Your Ticket</h2>
+    <p>Thank you for your payment! Here is your event ticket:</p>
+    <a id="downloadLink" href="#" class="btn-primary">Download Ticket</a>
+  </main>
+  <footer>
+    <p>&copy; 2025 Eventlify. All rights reserved.</p>
+  </footer>
+  <script>
+    // Fetch ticket URL from backend
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticketUrl = urlParams.get("ticketUrl");
+
+    if (ticketUrl) {
+      document.getElementById("downloadLink").href = ticketUrl;
+    } else {
+      document.body.innerHTML = "<p>Error fetching ticket details. Please contact support.</p>";
+    }
+  </script>
+</body>
+</html>

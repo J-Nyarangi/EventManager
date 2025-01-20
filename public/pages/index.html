@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Event Manager - Organize and manage your events efficiently">
+    <title>Eventlify | Homepage</title>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                <span>Eventlify</span>
+            </a>
+            <button class="navbar-toggle" id="navToggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="navbar-menu" id="navLinks" role="navigation">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="container homepage">
+        <!-- Featured Events Section -->
+        <section class="featured-events">
+            <h2 class="section-title">Featured Events</h2>
+            <div class="events-container grid-view" id="eventsContainer">
+                <!-- Dynamic event cards will be inserted here by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Eventlify</span>
+            </div>
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="help.html">Help Center</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+            <p class="footer-copyright">&copy; 2025 Eventlify. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../assets/js/viewevent.js"></script>
+    <script>
+        window.addEventListener('scroll', () => {
+            document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 0);
+        });
+
+        // Fetch and Display Featured Events with Banners
+        document.addEventListener('DOMContentLoaded', async () => {
+            const eventsContainer = document.getElementById('eventsContainer');
+
+            try {
+                const response = await fetch('/api/events');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch events');
+                }
+
+                const events = await response.json();
+                eventsContainer.innerHTML = ''; // Clear any existing content
+
+                // Populate Events
+                events.forEach(event => {
+                    const eventCard = document.createElement('div');
+                    eventCard.classList.add('event-card');
+                    
+                    // Event Card HTML
+                    eventCard.innerHTML = `
+                        <div class="event-banner">
+                            <img src="${event.banner_image || '../assets/images/default-banner.jpg'}" alt="${event.name} banner">
+                        </div>
+                        <div class="event-info">
+                            <h3 class="event-title">${event.name}</h3>
+                            <p class="event-date"><i class="fas fa-calendar"></i> ${new Date(event.date).toLocaleDateString()}</p>
+                            <p class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                            <a href="view_event.html?id=${event.id}" class="btn btn-primary">View Details</a>
+                        </div>
+                    `;
+                    eventsContainer.appendChild(eventCard);
+                });
+            } catch (error) {
+                console.error('Error fetching events:', error);
+                eventsContainer.innerHTML = '<p>Failed to load events. Please try again later.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

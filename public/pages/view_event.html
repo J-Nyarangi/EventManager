@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore detailed information about the event and book tickets.">
+    <title>Event Details | Event Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/eventstyles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+            <span>Eventlify</span>
+        </div>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="nav-content">
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="ticket.html">My Tickets</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container event-details-page">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb">
+            <a href="index.html">Home</a> /
+            <a href="dashboard.html">My Tickets</a> /
+            <span id="breadcrumb-event-name">Event</span>
+        </nav>
+
+        <!-- Event Header -->
+        <header class="event-header">
+            <div class="event-banner">
+                <img id="event-banner" src="../assets/images/placeholder.jpg" alt="Event Banner">
+            </div>
+            <div class="event-header-content">
+                <div class="event-header-info">
+                    <div class="event-status-badge" id="event-status">Upcoming</div>
+                    <h1 id="event-name">Event Name</h1>
+                    <div class="event-meta">
+                        <span><i class="fas fa-calendar"></i> <span id="event-date">Date</span></span>
+                        <span><i class="fas fa-clock"></i> 9:00 AM - 5:00 PM</span>
+                        <span><i class="fas fa-map-marker-alt"></i> <span id="event-location">Location</span></span>
+                        <span><i class="fas fa-users"></i> <span id="event-attendees">Attendees</span></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Event Content -->
+        <div class="event-content-grid">
+            <!-- Main Content -->
+            <section class="event-main-content">
+                <!-- Ticket Booking -->
+                <div class="ticket-booking">
+                    <h2>Book Your Tickets</h2>
+                    <form action="checkout.html" method="GET">
+                        <label for="ticket-type">Select Ticket Type:</label>
+                        <select id="ticket-type" name="ticket_type" required>
+                            <!-- Dynamic Ticket Options -->
+                        </select>
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+                        <button type="submit" class="btn btn-primary">Proceed to Checkout</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Sidebar -->
+            <!-- Sidebar -->
+<aside class="event-sidebar">
+    <div class="sidebar-widget">
+        <h3>Event Stats</h3>
+        <div class="stats-grid">
+            <div class="stat-item"><span>Total Capacity:</span> <span id="event-capacity">0</span></div>
+            <div class="stat-item"><span>Registered:</span> <span id="event-registered">0</span></div>
+            <div class="stat-item"><span>Available:</span> <span id="event-available">0</span></div>
+        </div>
+    </div>
+</aside>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Eventlify. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const eventId = params.get('id');
+
+            if (!eventId) {
+                alert('Invalid event ID');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/events/${eventId}`);
+                if (!response.ok) throw new Error('Failed to fetch event details');
+
+                const event = await response.json();
+                document.getElementById('event-name').textContent = event.name;
+                document.getElementById('breadcrumb-event-name').textContent = event.name;
+                document.getElementById('event-date').textContent = event.date;
+                document.getElementById('event-location').textContent = event.location;
+                document.getElementById('event-attendees').textContent = `${event.capacity} Attendees`;
+                document.getElementById('event-banner').src = event.banner_image || '../assets/images/placeholder.jpg';
+
+                // Populate event stats
+                document.getElementById('event-capacity').textContent = event.capacity;
+                document.getElementById('event-registered').textContent = event.registered;
+                document.getElementById('event-available').textContent = event.available;
+
+                // Populate ticket types
+                const ticketTypeSelect = document.getElementById('ticket-type');
+                event.tickets.forEach(ticket => {
+                    const option = document.createElement('option');
+                    option.value = ticket.type;
+                    option.textContent = `${ticket.type} - Ksh${ticket.price}`;
+                    ticketTypeSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error(error);
+                alert('Failed to load event details. Please try again later.');
+            }
+        });
+    </script>
+</body>
+</html>

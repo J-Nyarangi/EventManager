@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="profile.css">
+    <script defer src="profile.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="profile-header">
+            <h1>User Profile</h1>
+        </header>
+
+        <section class="profile-details">
+            <h2>Account Details</h2>
+            <div class="user-info">
+                <p><strong>Username:</strong> <span id="username">Sheban07</span></p>
+                <p><strong>Email:</strong> <span id="email">shebankaingu@gmail.com</span></p>
+                <p><strong>Joined:</strong> <span id="joined">January 1, 2023</span></p>
+            </div>
+        </section>
+
+        <section class="account-actions">
+            <h2>Manage Account</h2>
+            <div class="action-buttons">
+                <button id="change-password" onclick="showChangePassword()">Change Password</button>
+                <button id="delete-account" onclick="confirmDeleteAccount()">Delete Account</button>
+            </div>
+        </section>
+
+        <section id="password-change-section" class="hidden">
+            <h2>Change Password</h2>
+            <form id="change-password-form">
+                <label for="current-password">Current Password:</label>
+                <input type="password" id="current-password" name="current-password" required>
+
+                <label for="new-password">New Password:</label>
+                <input type="password" id="new-password" name="new-password" required>
+
+                <label for="confirm-password">Confirm New Password:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+
+                <button type="submit">Update Password</button>
+            </form>
+        </section>
+    </div>
+</body>
+</html>

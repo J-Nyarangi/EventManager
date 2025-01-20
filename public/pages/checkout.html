@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Secure checkout for event ticket booking using M-Pesa.">
+    <title>Checkout | Eventlify</title>
+    <link rel="stylesheet" href="../assets/css/checkout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+            <span>Eventlify</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="checkout-section">
+            <h1>Secure Checkout</h1>
+            <p>Complete your payment using M-Pesa.</p>
+
+            <!-- Checkout Form -->
+            <form id="checkoutForm">
+                <div class="form-group">
+                    <input type="hidden" id="eventId" value="EVENT_ID_HERE">
+                    <input type="hidden" id="ticketType" value="TICKET_TYPE_HERE">
+                    <input type="number" id="quantity" value="1" min="1">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input 
+                        type="tel" 
+                        id="phoneNumber" 
+                        name="phoneNumber" 
+                        placeholder="e.g., 254712345678" 
+                        aria-label="Enter your phone number" 
+                        pattern="2547[0-9]{8}" 
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Amount (KES)</label>
+                    <input 
+                        type="number" 
+                        id="amount" 
+                        name="amount" 
+                        value="1" 
+                        readonly 
+                        aria-label="Amount to pay">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Pay with M-Pesa</button>
+            </form>
+
+            <!-- Feedback/Message Area -->
+            <div id="message" class="message"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Eventlify. All rights reserved.</p>
+    </footer>
+
+    <!-- Link to external JavaScript -->
+    <script src="../assets/js/checkout.js"></script>
+</body>
+</html>

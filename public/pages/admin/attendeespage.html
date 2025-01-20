@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendee Lists | Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/adminstyles.css">
+    <style>
+        .btn {
+            margin: 0.5rem;
+        }
+    </style>
+</head>
+<body class="admin-dashboard">
+    <aside id="sidebar"></aside>
+    <div class="main-content">
+        <header class="top-nav">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="search" placeholder="Search events, users, or tickets...">
+            </div>
+            <div class="top-nav-right">
+                <button class="icon-btn"><i class="fas fa-bell"></i></button>
+                <div class="admin-profile">
+                    <img src="profile-placeholder.jpg" alt="Admin profile">
+                    <span>John Admin</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="page-header">
+                <h1>Attendee Lists</h1>
+                <div class="header-actions">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-envelope"></i> Email All
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i> Export List
+                    </button>
+                </div>
+            </div>
+
+            <section class="filters-section">
+                <div class="filter-group">
+                    <select class="filter-select" id="eventSelector" style="min-width: 200px;">
+                        <option value="">Select Event</option>
+                        <!-- Event options will be dynamically populated -->
+                    </select>
+                    <input type="text" placeholder="Search attendees..." class="search-input" id="searchAttendees">
+                    <select class="filter-select" id="ticketTypeSelector">
+                        <option value="">Ticket Type</option>
+                        <option value="vip">VIP</option>
+                        <option value="regular">Regular</option>
+                        <option value="student">Student</option>
+                    </select>
+                    <button class="btn btn-outline" id="applyFiltersBtn">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </div>
+            </section>
+
+            <section class="stats-grid" id="statsGrid">
+                <!-- Stats cards will be dynamically populated -->
+            </section>
+
+            <section class="dashboard-card">
+                <div class="card-header">
+                    <h2>Attendee List</h2>
+                    <div class="card-actions">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Ticket Type</th>
+                                <th>Purchase Date</th>
+                                <th>Check-in Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendeeTableBody">
+                            <!-- Attendee rows will be dynamically populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="modal" id="attendeeModal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Attendee Details</h2>
+                        <button class="close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Attendee details will be dynamically loaded -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const eventSelector = document.getElementById('eventSelector');
+            const statsGrid = document.getElementById('statsGrid');
+            const attendeeTableBody = document.getElementById('attendeeTableBody');
+
+            const loadEvents = async () => {
+                try {
+                    const response = await fetch('/api/events');
+                    const events = await response.json();
+
+                    eventSelector.innerHTML = '<option value="">Select Event</option>';
+                    events.forEach(event => {
+                        const option = document.createElement('option');
+                        option.value = event.id;
+                        option.textContent = event.name;
+                        eventSelector.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error loading events:', error);
+                }
+            };
+
+            const loadStats = async (eventId) => {
+                try {
+                    const response = await fetch(`/api/attendees/stats?eventId=${eventId}`);
+                    const stats = await response.json();
+
+                    statsGrid.innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #e3f2fd;">
+                                <i class="fas fa-users" style="color: #1976d2;"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>Total Attendees</h3>
+                                <p class="stat-number">${stats.totalAttendees}</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #e8f5e9;">
+                                <i class="fas fa-star" style="color: #388e3c;"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>VIP Tickets</h3>
+                                <p class="stat-number">${stats.vipTickets}</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #fff3e0;">
+                                <i class="fas fa-ticket-alt" style="color: #f57c00;"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>Regular Tickets</h3>
+                                <p class="stat-number">${stats.regularTickets}</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #f3e5f5;">
+                                <i class="fas fa-graduation-cap" style="color: #7b1fa2;"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3>Student Tickets</h3>
+                                <p class="stat-number">${stats.studentTickets}</p>
+                            </div>
+                        </div>`;
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                }
+            };
+
+            const loadAttendees = async (eventId) => {
+                try {
+                    const response = await fetch(`/api/attendees?eventId=${eventId}`);
+                    const attendees = await response.json();
+
+                    attendeeTableBody.innerHTML = '';
+                    attendees.forEach(attendee => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><input type="checkbox" class="attendee-select"></td>
+                            <td>
+                                <div class="attendee-info">
+                                    <img src="${attendee.avatar || 'avatars/default.jpg'}" alt="${attendee.name}" class="attendee-avatar">
+                                    <div>
+                                        <span class="attendee-name">${attendee.name}</span>
+                                        <span class="attendee-company">${attendee.company || 'N/A'}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${attendee.email}</td>
+                            <td><span class="badge ${attendee.ticketType.toLowerCase()}">${attendee.ticketType}</span></td>
+                            <td>${new Date(attendee.purchaseDate).toLocaleDateString()}</td>
+                            <td><span class="badge ${attendee.checkInStatus === 'Checked In' ? 'success' : 'danger'}">${attendee.checkInStatus}</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="icon-btn" title="Send Email">
+                                        <i class="fas fa-envelope"></i>
+                                    </button>
+                                    <button class="icon-btn" title="Edit Details">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="icon-btn" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>`;
+                        attendeeTableBody.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Error loading attendees:', error);
+                }
+            };
+
+            eventSelector.addEventListener('change', () => {
+                const eventId = eventSelector.value;
+                if (eventId) {
+                    loadStats(eventId);
+                    loadAttendees(eventId);
+                }
+            });
+
+            await loadEvents();
+        });
+    </script>
+    <script src="../../assets/js/sidebar.js"></script>
+</body>
+</html>
